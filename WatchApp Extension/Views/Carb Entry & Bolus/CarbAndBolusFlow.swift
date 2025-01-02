@@ -7,9 +7,10 @@
 //
 
 import SwiftUI
+import SwiftUICharts
 import HealthKit
 import LoopKit
-
+import LoopCore
 
 struct CarbAndBolusFlow: View {
     enum Configuration: Equatable {
@@ -22,6 +23,8 @@ struct CarbAndBolusFlow: View {
         case bolusEntry
         case bolusConfirmation
     }
+    
+    var loopManager = ExtensionDelegate.shared().loopManager
 
     fileprivate enum AlertState {
         case bolusRecommendationChanged
@@ -49,6 +52,9 @@ struct CarbAndBolusFlow: View {
 
     // MARK: - State: Bolus Confirmation
     @State private var bolusConfirmationProgress: Double = 0
+    
+    // MARK: - State: Chart Data
+    @State private var chartData: GlucoseChartData?
 
     // MARK: - Initialization
 
@@ -76,9 +82,19 @@ struct CarbAndBolusFlow: View {
 
     var body: some View {
         VStack(spacing: 2) {
+            glucosePredictionChartView
             inputViews
             Spacer()
             actionView
+        }
+        .onAppear {
+            loopManager.generateChartData {
+                chartData in DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        self.chartData = chartData
+                    }
+                }
+            }
         }
         // Position the carb labels via preference keys propagated up from lower in the view tree.
         .overlayPreferenceValue(CarbAmountPositionKey.self, positionedCarbAmountLabel)
@@ -90,6 +106,24 @@ struct CarbAndBolusFlow: View {
         // Handle error states.
         .onReceive(viewModel.$error) { self.activeAlert = $0.map(AlertState.communicationError) }
         .alert(item: $activeAlert, content: alert(for:))
+    }
+}
+
+// Mark: - Prediction Chart
+
+extension CarbAndBolusFlow {
+    private var glucosePredictionChartView: some View {
+        Group {
+            if let glucoseData = chartData?.historicalGlucose?.compactMap({ $0 as SampleValue }) {
+                let dataPoints: [LineChartDataPoint] = glucoseData.map { SampleValue in
+                    LineChartDataPoint(value: SampleValue.quantity.doubleValue(for: chartData!.unit!))
+                }
+                let lineChartData = LineChartData(dataSets: LineDataSet(dataPoints: dataPoints))
+                LineChart(chartData: lineChartData)
+            } else {
+                Text("Hello")
+            }
+        }
     }
 }
 
