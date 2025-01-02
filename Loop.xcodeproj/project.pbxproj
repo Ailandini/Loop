@@ -1846,14 +1846,6 @@
 			path = "Loop Widget Extension";
 			sourceTree = "<group>";
 		};
-		1796ABCA2D24FDB5004F8540 /* Mock Managers */ = {
-			isa = PBXGroup;
-			children = (
-				1796ABCD2D24FDE1004F8540 /* MockLoopDataManager.swift */,
-			);
-			path = "Mock Managers";
-			sourceTree = "<group>";
-		};
 		1DA6499D2441266400F61E75 /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1882,6 +1874,7 @@
 				1D70C40026EC0F9D00C62570 /* SupportManagerTests.swift */,
 				A9F5F1F4251050EC00E7C8A4 /* ZipArchiveTests.swift */,
 				C1D476B32A8ED179002C1C87 /* LoopAlgorithmTests.swift */,
+				1796ABCD2D24FDE1004F8540 /* MockLoopDataManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2348,7 +2341,6 @@
 				A96DAC292838EF8A00D94E38 /* DiagnosticLogTests.swift */,
 				A9DAE7CF2332D77F006AE942 /* LoopTests.swift */,
 				8968B113240C55F10074BB48 /* LoopSettingsTests.swift */,
-				1796ABCA2D24FDB5004F8540 /* Mock Managers */,
 				E93E86AC24DDE02C00FF40C8 /* Mock Stores */,
 			);
 			path = LoopTests;
