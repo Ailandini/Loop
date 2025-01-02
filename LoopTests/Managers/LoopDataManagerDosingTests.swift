@@ -645,24 +645,3 @@ class LoopDataManagerDosingTests: LoopDataManagerTests {
     }
 
 }
-
-extension LoopDataManagerDosingTests {
-    public var bundle: Bundle {
-        return Bundle(for: type(of: self))
-    }
-
-    public func loadFixture<T>(_ resourceName: String) -> T {
-        let path = bundle.path(forResource: resourceName, ofType: "json")!
-        return try! JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: path)), options: []) as! T
-    }
-    
-    func loadBasalRateScheduleFixture(_ resourceName: String) -> BasalRateSchedule {
-        let fixture: [JSONDictionary] = loadFixture(resourceName)
-
-        let items = fixture.map {
-            return RepeatingScheduleValue(startTime: TimeInterval(minutes: $0["minutes"] as! Double), value: $0["rate"] as! Double)
-        }
-
-        return BasalRateSchedule(dailyItems: items, timeZone: .utcTimeZone)!
-    }
-}
